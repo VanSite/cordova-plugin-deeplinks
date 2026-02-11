@@ -24,6 +24,9 @@
     <clobbers target="universalLinks"/>
   </js-module>
 
+<!-- Hook to add Associated Domains to iOS entitlements (cordova-ios 8 compatible) -->
+  <hook src="hooks/addAssociatedDomains.js" type="after_prepare"/>
+
   <platform name="ios">
 <!-- Plugin inclusion in Cordova config.xml  -->
     <config-file parent="/*" target="config.xml">
@@ -31,13 +34,6 @@
         <param name="ios-package" value="CULPlugin"/>
         <param name="onload" value="true"/>
       </feature>
-    </config-file>
-
-<!-- Associated Domains entitlement (replaces afterPrepareHook iOS logic) -->
-    <config-file parent="com.apple.developer.associated-domains" target="*.entitlements">
-      <array>
-        <string>applinks:vansite.eu</string>
-      </array>
     </config-file>
 
 <!-- Objective-C Sources -->
