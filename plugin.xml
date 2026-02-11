@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin id="cordova-plugin-deeplinks" version="1.1.1" xmlns="http://apache.org/cordova/ns/plugins/1.0">
+<plugin id="cordova-plugin-deeplinks" version="2.0.0"
+        xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
   <name>Cordova Deeplinks Plugin</name>
   <description>
-    Cordova plugin to add in your application support for Universal Links (iOS 9) and Deep Links (Android).
-    Basically, open application through the link in the browser.
+    Cordova plugin to add in your application support for Universal Links (iOS) and Deep Links (Android).
   </description>
   <license>MIT</license>
   <keywords>cordova,links,universal</keywords>
 
-  <repo>git@github.com:e-imaxina/cordova-plugin-deeplinks.git</repo>
-  <issue>https://github.com/e-imaxina/cordova-plugin-deeplinks/issues</issue>
+  <repo>git@github.com:VanSite/cordova-plugin-deeplinks.git</repo>
+  <issue>https://github.com/VanSite/cordova-plugin-deeplinks/issues</issue>
 
   <engines>
-    <engine name="cordova-ios" version=">=3.8"></engine>
-    <engine name="cordova-android" version=">=4"></engine>
+    <engine name="cordova-ios" version=">=7.0.0"></engine>
+    <engine name="cordova-android" version=">=13.0.0"></engine>
   </engines>
 
-<!-- JavaScrip Library Sources -->
+<!-- JavaScript Library Sources -->
   <js-module name="universalLinks" src="www/universal_links.js">
     <clobbers target="universalLinks"/>
   </js-module>
 
-<!-- Hooks -->
-  <hook src="hooks/afterPrepareHook.js" type="after_prepare"/>
-  <hook src="hooks/beforePluginInstallHook.js" type="before_plugin_install" />
-
   <platform name="ios">
-    <hook src="hooks/iosBeforePrepareHook.js" type="before_prepare" />
-
 <!-- Plugin inclusion in Cordova config.xml  -->
     <config-file parent="/*" target="config.xml">
       <feature name="UniversalLinks">
         <param name="ios-package" value="CULPlugin"/>
         <param name="onload" value="true"/>
       </feature>
+    </config-file>
+
+<!-- Associated Domains entitlement (replaces afterPrepareHook iOS logic) -->
+    <config-file parent="com.apple.developer.associated-domains" target="*.entitlements">
+      <array>
+        <string>applinks:vansite.eu</string>
+      </array>
     </config-file>
 
 <!-- Objective-C Sources -->
@@ -84,6 +86,16 @@
         <param name="android-package" value="com.nordnetab.cordova.ul.UniversalLinksPlugin"/>
         <param name="onload" value="true"/>
       </feature>
+    </config-file>
+
+<!-- Intent filter for App Links (replaces afterPrepareHook Android logic) -->
+    <config-file parent="/manifest/application/activity" target="AndroidManifest.xml">
+      <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="https" android:host="vansite.eu"/>
+      </intent-filter>
     </config-file>
 
 <!-- Java Library Sources -->
